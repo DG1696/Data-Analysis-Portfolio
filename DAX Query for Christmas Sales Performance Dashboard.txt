@@ -1,0 +1,81 @@
+// DAX Query
+DEFINE
+	VAR __DS0FilterTable = 
+		FILTER(
+			KEEPFILTERS(VALUES('Locations'[Store Email Address])),
+			NOT('Locations'[Store Email Address] IN {BLANK()})
+		)
+
+	VAR __DS0FilterTable2 = 
+		FILTER(
+			KEEPFILTERS(VALUES('Product'[Dept])),
+			NOT('Product'[Dept] IN {"Christmas"})
+		)
+
+	VAR __DS0FilterTable3 = 
+		TREATAS({"Area 01 Tony Smith"}, 'Locations'[Area Name])
+
+	VAR __DS0FilterTable4 = 
+		FILTER(
+			KEEPFILTERS(VALUES('Product'[Dept ID])),
+			NOT('Product'[Dept ID] IN {"0012"})
+		)
+
+	VAR __DS0FilterTable5 = 
+		FILTER(
+			KEEPFILTERS(VALUES('Calendar'[Year_Indicator])),
+			NOT('Calendar'[Year_Indicator] IN {"LY"})
+		)
+
+	VAR __ValueFilterDM0 = 
+		FILTER(
+			KEEPFILTERS(
+				SUMMARIZECOLUMNS(
+					'Locations'[Store Name],
+					__DS0FilterTable,
+					__DS0FilterTable2,
+					__DS0FilterTable3,
+					__DS0FilterTable4,
+					__DS0FilterTable5,
+					"Food", 'Weekly Sales'[Food],
+					"Arts__Stationary___Party", 'Weekly Sales'[Arts, Stationary & Party],
+					"Health___Beauty", 'Weekly Sales'[Health & Beauty],
+					"Kitchen___Dining", 'Weekly Sales'[Kitchen & Dining],
+					"Home_Decor", 'Weekly Sales'[Home Decor],
+					"Pets", 'Weekly Sales'[Pets],
+					"Textile", 'Weekly Sales'[Textile],
+					"Rank", 'Locations'[Rank],
+					"Total_Sales", 'Weekly Sales'[Total Sales]
+				)
+			),
+			[Total_Sales] <> CURRENCY("0")
+		)
+
+	VAR __DS0Core = 
+		SUMMARIZECOLUMNS(
+			'Locations'[Store Name],
+			__DS0FilterTable,
+			__DS0FilterTable2,
+			__DS0FilterTable3,
+			__DS0FilterTable4,
+			__DS0FilterTable5,
+			__ValueFilterDM0,
+			"Rank", 'Locations'[Rank],
+			"Food", 'Weekly Sales'[Food],
+			"Arts__Stationary___Party", 'Weekly Sales'[Arts, Stationary & Party],
+			"Health___Beauty", 'Weekly Sales'[Health & Beauty],
+			"Kitchen___Dining", 'Weekly Sales'[Kitchen & Dining],
+			"Home_Decor", 'Weekly Sales'[Home Decor],
+			"Pets", 'Weekly Sales'[Pets],
+			"Textile", 'Weekly Sales'[Textile],
+			"Total_Sales", 'Weekly Sales'[Total Sales]
+		)
+
+	VAR __DS0PrimaryWindowed = 
+		TOPN(501, __DS0Core, [Rank], 1, 'Locations'[Store Name], 1)
+
+EVALUATE
+	__DS0PrimaryWindowed
+
+ORDER BY
+	[Rank], 'Locations'[Store Name]
