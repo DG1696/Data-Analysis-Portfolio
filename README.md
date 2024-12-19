@@ -21,4 +21,5 @@ Tools & Techniques
 Power BI: Used for dashboard creation with dynamic visualizations and DAX for advanced calculations.
 MS SQL Server Management Studio: Used for extraction and manipulation.
 
-![image](https://github.com/user-attachments/assets/46ae6072-bb46-4a4d-af24-73afea6869da)
+![image](https://github.com/user-attachments/assets/45e61417-a880-4a3a-a2c4-84558b315bdf)
+
