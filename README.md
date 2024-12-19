@@ -1,6 +1,7 @@
 # Data-Analysis-Portfolio
 
 Project No 1 -Christmas Sales Performance Dashboard 
+
 Project Overview:
 This Power BI dashboard was developed to provide insights into Christmas sales performance for a retail chain. It enables stakeholders to easily identify top-performing and underperforming stores, compare sales across departments, and evaluate overall business performance during the festive season. The raw dataset contained over 579 million rows, which required extensive filtering to focus on Christmas-specific sales data. The data was cleaned, structured, and validated to ensure accuracy and relevance before visualization.
 
