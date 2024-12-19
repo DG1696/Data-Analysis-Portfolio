@@ -25,29 +25,7 @@ Dashboard :
 ![image](https://github.com/user-attachments/assets/45e61417-a880-4a3a-a2c4-84558b315bdf)
 
 
-Project No 2: Deliveroo Sales Report Dashboard
-
-Project Overview:
-This project is a Power BI dashboard created to visualize and analyze Deliveroo sales data across various stores within specific geographic areas. The report provides key insights into sales performance, enabling businesses to monitor and compare sales metrics, trends, and store performance within targeted regions.
-
-Objectives : The goal of this dashboard is to provide Deliveroo managers, analysts, and business stakeholders with a clear, interactive view of their sales performance, which will help optimize operational strategies and improve decision-making.
-
-Key Features:
-- Sales Overview: Displays total sales across each store.
-- Geographic Analysis: Focuses on stores within particular areas, enabling location-based performance comparisons.
-- Time Series Trends: Visualizes sales data over different time periods, helping to identify trends and seasonal patterns.
-- Filters & Interactivity: Users can filter the data by store, region, and time frame for detailed analysis.
-
-Tools & Technologies Used:
-Power BI: For data visualization and dashboard creation.
-DAX (Data Analysis Expressions): Used for creating complex calculations and measures within the report.
-Power Query: Data transformation and shaping to prepare the data for analysis.
-
-Dashboard :
-![image](https://github.com/user-attachments/assets/23aac331-6a8c-498c-9238-0af65d608a36)
-
-
-Project No 3: Stock Availability and Trend Dashboard
+Project No 2: Stock Availability and Trend Dashboard
 
 Project Overview :
 This project involves the creation of a Power BI Dashboard designed to streamline stock management for stakeholders who previously maintained stock data manually in Excel. Given the vast amount of data (in the millions of rows), the manual process was inefficient and error-prone. This dashboard provides an automated, interactive, and user-friendly solution for managing and analyzing stock levels, improving decision-making, and reducing manual effort.
@@ -77,7 +55,29 @@ MS SQL Server Management Studio: Used for data extraction and comparison.
 ![image](https://github.com/user-attachments/assets/bb827ff4-5aa1-4f9e-9dd9-808b51397405)
 
 
-Project No 3 - Event Bay Sales Dashboard
+Project No 3: Deliveroo Sales Report Dashboard
+
+Project Overview:
+This project is a Power BI dashboard created to visualize and analyze Deliveroo sales data across various stores within specific geographic areas. The report provides key insights into sales performance, enabling businesses to monitor and compare sales metrics, trends, and store performance within targeted regions.
+
+Objectives : The goal of this dashboard is to provide Deliveroo managers, analysts, and business stakeholders with a clear, interactive view of their sales performance, which will help optimize operational strategies and improve decision-making.
+
+Key Features:
+- Sales Overview: Displays total sales across each store.
+- Geographic Analysis: Focuses on stores within particular areas, enabling location-based performance comparisons.
+- Time Series Trends: Visualizes sales data over different time periods, helping to identify trends and seasonal patterns.
+- Filters & Interactivity: Users can filter the data by store, region, and time frame for detailed analysis.
+
+Tools & Technologies Used:
+Power BI: For data visualization and dashboard creation.
+DAX (Data Analysis Expressions): Used for creating complex calculations and measures within the report.
+Power Query: Data transformation and shaping to prepare the data for analysis.
+
+Dashboard :
+![image](https://github.com/user-attachments/assets/23aac331-6a8c-498c-9238-0af65d608a36)
+
+
+Project No 4 - Event Bay Sales Dashboard
 
 Project Overview : This project involves the creation of a Power BI Dashboard designed to provide key event-related sales insights for retail stores. The dashboard focuses on upcoming events such as Halloween, Christmas, and Easter, helping stores prepare for these occasions by providing important product-level information. With this data, stores can plan decorations, promotions, and inventory management in advance to attract more customers during peak shopping periods.
 
