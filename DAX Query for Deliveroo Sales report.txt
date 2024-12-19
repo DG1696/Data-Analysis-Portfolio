@@ -1,0 +1,73 @@
+// DAX Query
+DEFINE
+	MEASURE 'Deliveroo Store Sales'[Test Deliveroo Sales] = 
+		(/* USER DAX BEGIN */
+SUM('Deliveroo Store Sales'[SaleValue])
+/* USER DAX END */)
+
+	MEASURE 'Deliveroo Store Sales'[Test Deliveroo Profit] = 
+		(/* USER DAX BEGIN */
+[Test Deliveroo Sales] - [Test Deliveroo Total TAX] - [Test Deliveroo Total Cost]
+/* USER DAX END */)
+
+	MEASURE 'Deliveroo Store Sales'[Test Deliveroo Total TAX] = 
+		(/* USER DAX BEGIN */
+SUM('Deliveroo Store Sales'[TaxValue])
+/* USER DAX END */)
+
+	MEASURE 'Deliveroo Store Sales'[Test Deliveroo Total Cost] = 
+		(/* USER DAX BEGIN */
+SUM('Deliveroo Store Sales'[CostValue])
+/* USER DAX END */)
+
+	MEASURE 'Deliveroo Store Sales'[Test Deliveroo Margin] = 
+		(/* USER DAX BEGIN */
+DIVIDE('Deliveroo Store Sales'[Test Deliveroo Profit], 'Deliveroo Store Sales'[Test Deliveroo Sales] - 'Deliveroo Store Sales'[Test Deliveroo Total TAX])
+/* USER DAX END */)
+
+	MEASURE 'Deliveroo Store Sales'[Test Deliveroo QTY] = 
+		(/* USER DAX BEGIN */
+SUM('Deliveroo Store Sales'[SaleQuantity])
+/* USER DAX END */)
+
+	MEASURE 'Deliveroo Store Sales'[Deliveroo Order_count] = 
+		(/* USER DAX BEGIN */
+DISTINCTCOUNT('Deliveroo Store Sales'[TransactionNumber])
+/* USER DAX END */)
+
+	VAR __DS0FilterTable = 
+		FILTER(
+			KEEPFILTERS(VALUES('Locations'[ID-Store])),
+			NOT(SEARCH("closed", 'Locations'[ID-Store], 1, 0) >= 1)
+		)
+
+	VAR __DS0FilterTable2 = 
+		FILTER(
+			KEEPFILTERS(VALUES('Calendar'[TrimDate])),
+			'Calendar'[TrimDate] >= DATE(2024, 1, 29)
+		)
+
+	VAR __DS0FilterTable3 = 
+		TREATAS({"CY"}, 'Calendar'[Year Indicator])
+
+	VAR __DS0Core = 
+		SUMMARIZECOLUMNS(
+			ROLLUPADDISSUBTOTAL('Locations'[ID-Store], "IsGrandTotalRowTotal"),
+			__DS0FilterTable,
+			__DS0FilterTable2,
+			__DS0FilterTable3,
+			"Test Deliveroo Sales", 'Deliveroo Store Sales'[Test Deliveroo Sales],
+			"Test Deliveroo Profit", 'Deliveroo Store Sales'[Test Deliveroo Profit],
+			"Test Deliveroo Margin", 'Deliveroo Store Sales'[Test Deliveroo Margin],
+			"Test Deliveroo QTY", 'Deliveroo Store Sales'[Test Deliveroo QTY],
+			"Deliveroo Order_count", 'Deliveroo Store Sales'[Deliveroo Order_count]
+		)
+
+	VAR __DS0PrimaryWindowed = 
+		TOPN(502, __DS0Core, [IsGrandTotalRowTotal], 0, 'Locations'[ID-Store], 1)
+
+EVALUATE
+	__DS0PrimaryWindowed
+
+ORDER BY
+	[IsGrandTotalRowTotal] DESC, 'Locations'[ID-Store]
