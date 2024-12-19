@@ -1,0 +1,227 @@
+// DAX Query
+DEFINE
+	MEASURE 'Wilko VS Product Data'[Back In Stock Date Measure] = 
+		(/* USER DAX BEGIN */
+
+CALCULATE(
+SELECTEDVALUE('Wilko VS Product Data'[Back In Stock Date]), 'Wilko VS Product Data'[CreatedDate] = MAX('Wilko VS Product Data'[CreatedDate]))
+/* USER DAX END */)
+
+	MEASURE 'Wilko VS Product Data'[Free_Stock_Sum] = 
+		(/* USER DAX BEGIN */
+SUM('Wilko VS Product Data'[Free Stock])
+/* USER DAX END */)
+
+	MEASURE 'Wilko VS Product Data'[Low_Stock_Sum] = 
+		(/* USER DAX BEGIN */
+SUM('Wilko VS Product Data'[Low Stock])
+/* USER DAX END */)
+
+	MEASURE 'Wilko VS Product Data'[Delivery Lead Time] = 
+		(/* USER DAX BEGIN */
+SUM('Wilko VS Product Data'[Lead Time Days])
+/* USER DAX END */)
+
+	MEASURE 'Wilko VS Product Data'[Free_Stock] = 
+		(/* USER DAX BEGIN */
+
+VAR _maxDate = CALCULATE(MAX('Wilko VS Product Data'[CreatedDate]), ALL('Wilko VS Product Data'))
+RETURN 
+   CALCULATE([Free_Stock_Sum], 'Wilko VS Product Data'[CreatedDate]= _maxDate)
+
+
+/* USER DAX END */)
+
+	MEASURE 'Wilko VS Product Data'[Low_Stock] = 
+		(/* USER DAX BEGIN */
+
+VAR max_Date =CALCULATE( MAX('Wilko VS Product Data'[CreatedDate]), ALL('Wilko VS Product Data'))
+RETURN
+    CALCULATE([Low_Stock_Sum], 'Wilko VS Product Data'[CreatedDate] = max_Date)
+    
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[Stock QTY] = 
+		(/* USER DAX BEGIN */
+SUM('Wilko Data Feed'[StockQuantity])
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[Live published line w/ stock] = 
+		(/* USER DAX BEGIN */
+
+IF(
+    SELECTEDVALUE('Wilko Data Feed'[DirectDelivery]) = TRUE() &&
+    SELECTEDVALUE('Product Database'[Product Status (LI/SS/DS)]) = "LI (LIVE)" &&
+    [Stock QTY] > 0 &&
+    [On Site] = "Live",
+    "Yes",
+    "No"
+)
+
+                                
+                    
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[On Site] = 
+		(/* USER DAX BEGIN */
+
+IF(
+    AND(
+        SELECTEDVALUE('Wilko Data Feed'[ProductStatus]) = "approved",
+        SELECTEDVALUE('Wilko Data Feed'[VariantStatus]) = "approved"
+        ),
+        "Live",
+        "Not Live"
+)
+
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[LI etc stock in VS not in Hybris] = 
+		(/* USER DAX BEGIN */
+IF(
+                                        AND(
+                                            [Available Stock] = 0, 
+                                            [Live published line w/ stock] = "Yes"
+                                        ),
+                                        "Yes", "No"
+                                    )
+
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[Available Stock] = 
+		(/* USER DAX BEGIN */
+[Free_Stock_Sum] - [Low_Stock_Sum]
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[LI, published line w/o stock] = 
+		(/* USER DAX BEGIN */
+IF(
+                                    SELECTEDVALUE('Wilko Data Feed'[DirectDelivery]) = TRUE() &&
+                                    SELECTEDVALUE('Product Database'[Product Status (LI/SS/DS)] )= "LI (LIVE)" &&
+                                    [On Site] = "live" &&
+                                    [Available Stock] < 1,
+                                    "Yes", "No"
+)
+                                
+                                    
+                                    
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[LI, published line w/o stock & no Back in stock] = 
+		(/* USER DAX BEGIN */
+IF(
+                                                        AND(
+                                                        [LI, published line w/o stock] = "Yes",
+                                                        SELECTEDVALUE('Wilko VS Product Data'[Back In Stock Date]) = BLANK()
+                                                        ),
+                                                        "Yes", "No"
+)
+
+                                                    
+
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[LI, unpublished line w/o stock] = 
+		(/* USER DAX BEGIN */
+IF(
+                                    
+                                        SELECTEDVALUE('Wilko Data Feed'[DirectDelivery]) = TRUE() &&
+                                        [On Site] <> "Live" &&
+                                        SELECTEDVALUE('Product Database'[Product Status (LI/SS/DS)]) = "LI (LIVE)" &&
+                                        [Available Stock] < 1,
+                                        "Yes", "No"                                        
+                                    )
+
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[Lead time required (VS)] = 
+		(/* USER DAX BEGIN */
+IF([Delivery Lead Time] = BLANK(), "Yes", "No")
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[Non-compliant LT] = 
+		(/* USER DAX BEGIN */
+IF([Delivery Lead Time] = 1, "Yes", "No") 
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[Non compliant stock tolerance] = 
+		(/* USER DAX BEGIN */
+IF([Low_Stock_Sum] < 1, "Yes", "No")
+/* USER DAX END */)
+
+	MEASURE 'Wilko Data Feed'[Latest Available stock] = 
+		(/* USER DAX BEGIN */
+[Free_Stock] - [Low_Stock]
+/* USER DAX END */)
+
+	VAR __DS0FilterTable = 
+		FILTER(
+			KEEPFILTERS(VALUES('Product Database'[Product Status (LI/SS/DS)])),
+			NOT('Product Database'[Product Status (LI/SS/DS)] IN {"DS (DISCON)"})
+		)
+
+	VAR __DS0Core = 
+		SUMMARIZECOLUMNS(
+			'Wilko Data Feed'[ProductID],
+			'Wilko Data Feed'[ProductType],
+			'Wilko Data Feed'[PSA1],
+			'Wilko Data Feed'[PSA2],
+			'Wilko Data Feed'[PSA3],
+			'Wilko Data Feed'[Name],
+			'Wilko Data Feed'[Supplier],
+			'Wilko Data Feed'[CreatedDate],
+			__DS0FilterTable,
+			"Back In Stock Date Measure", 'Wilko VS Product Data'[Back In Stock Date Measure],
+			"MinModifiedDate", CALCULATE(MIN('Wilko Data Feed'[ModifiedDate])),
+			"Stock QTY", 'Wilko Data Feed'[Stock QTY],
+			"Live published line w/ stock", 'Wilko Data Feed'[Live published line w/ stock],
+			"On Site", 'Wilko Data Feed'[On Site],
+			"LI etc stock in VS not in Hybris", 'Wilko Data Feed'[LI etc stock in VS not in Hybris],
+			"LI, published line w/o stock", 'Wilko Data Feed'[LI, published line w/o stock],
+			"LI, published line w/o stock & no Back in stock", 'Wilko Data Feed'[LI, published line w/o stock & no Back in stock],
+			"LI, unpublished line w/o stock", 'Wilko Data Feed'[LI, unpublished line w/o stock],
+			"Lead time required (VS)", 'Wilko Data Feed'[Lead time required (VS)],
+			"Non-compliant LT", 'Wilko Data Feed'[Non-compliant LT],
+			"Non compliant stock tolerance", 'Wilko Data Feed'[Non compliant stock tolerance],
+			"Free_Stock", 'Wilko VS Product Data'[Free_Stock],
+			"Low_Stock", 'Wilko VS Product Data'[Low_Stock],
+			"Latest Available stock", 'Wilko Data Feed'[Latest Available stock]
+		)
+
+	VAR __DS0PrimaryWindowed = 
+		TOPN(
+			501,
+			__DS0Core,
+			[Back In Stock Date Measure],
+			0,
+			'Wilko Data Feed'[ProductID],
+			1,
+			'Wilko Data Feed'[ProductType],
+			1,
+			'Wilko Data Feed'[PSA1],
+			1,
+			'Wilko Data Feed'[PSA2],
+			1,
+			'Wilko Data Feed'[PSA3],
+			1,
+			'Wilko Data Feed'[Name],
+			1,
+			'Wilko Data Feed'[Supplier],
+			1,
+			'Wilko Data Feed'[CreatedDate],
+			1
+		)
+
+EVALUATE
+	__DS0PrimaryWindowed
+
+ORDER BY
+	[Back In Stock Date Measure] DESC,
+	'Wilko Data Feed'[ProductID],
+	'Wilko Data Feed'[ProductType],
+	'Wilko Data Feed'[PSA1],
+	'Wilko Data Feed'[PSA2],
+	'Wilko Data Feed'[PSA3],
+	'Wilko Data Feed'[Name],
+	'Wilko Data Feed'[Supplier],
+	'Wilko Data Feed'[CreatedDate]
