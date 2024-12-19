@@ -1,0 +1,15 @@
+Project No 2: Deliveroo Sales Report Dashboard
+
+Overview : This project is a Power BI dashboard created to visualize and analyze Deliveroo sales data across various stores within specific geographic areas. The report provides key insights into sales performance, enabling businesses to monitor and compare sales metrics, trends, and store performance within targeted regions.
+The goal of this dashboard is to provide Deliveroo managers, analysts, and business stakeholders with a clear, interactive view of their sales performance, which will help optimize operational strategies and improve decision-making.
+
+Key Features:
+- Sales Overview: Displays total sales across each store.
+- Geographic Analysis: Focuses on stores within particular areas, enabling location-based performance comparisons.
+- Time Series Trends: Visualizes sales data over different time periods, helping to identify trends and seasonal patterns.
+- Filters & Interactivity: Users can filter the data by store, region, and time frame for detailed analysis.
+
+Tools & Technologies Used:
+Power BI: For data visualization and dashboard creation.
+DAX (Data Analysis Expressions): Used for creating complex calculations and measures within the report.
+Power Query: Data transformation and shaping to prepare the data for analysis.
